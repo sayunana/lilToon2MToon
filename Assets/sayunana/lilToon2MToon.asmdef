@@ -1,0 +1,16 @@
+{
+    "name": "lilToon2MToon",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e7f0f8dffe955d640bbc76d1d4f4986e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
