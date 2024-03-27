@@ -51,8 +51,14 @@ namespace sayunana
                 SetSaveMaterialsFilePath();
             }
 
-            GUILayout.Label("保存先：" + saveMtoonMaterialsFilePath, textStyle);
-
+            if (InUnityProjectPath(saveMtoonMaterialsFilePath))
+            {
+                GUILayout.Label("保存先：" + GetProjectRelativePath(saveMtoonMaterialsFilePath), textStyle);
+            }
+            else
+            {
+                GUILayout.Label("保存先：", textStyle);
+            }
             root = (Animator)EditorGUILayout.ObjectField("アバターオブジェクト", root, typeof(Animator), true);
 
             if (saveMtoonMaterialsFilePath == String.Empty)
