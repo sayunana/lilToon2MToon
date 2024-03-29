@@ -1,0 +1,39 @@
+name: Auto Release
+on: workflow_dispatch
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    env:
+      JSON_FILE_PATH: "Assets/sayunana/package.json"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Version
+        id: GetVersion
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+          echo "VERSION=$(jq ".version" $JSON_FILE_PATH | tr -d '"')" >> $GITHUB_ENV 
+
+      - name: ZIP
+        run: |
+          cd ${{ github.workspace }}/Assets
+          mv sayunana/ com.github.sayunana.liltoon2mtoon.${{env.VERSION}}/
+          zip -r com.github.sayunana.liltoon2mtoon.${{env.VERSION}}.zip com.github.sayunana.liltoon2mtoon.${{env.VERSION}}/
+
+      - name: FilePath
+        run: |
+          echo "${{ github.workspace }}/Assets/com.github.sayunana.liltoon2mtoon.${{env.VERSION}}.zip"
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: lilToon2MToon ${{env.VERSION}}
+          body: "Update lilToon2MToon ${{env.VERSION}}\n UPM `https://github.com/sayunana/lilToon2MToon.git?path=Assets/sayunana#${{env.VERSION}}`"
+          tag_name: ${{env.VERSION}}
+          draft: false
+          files: "${{ github.workspace }}/Assets/com.github.sayunana.liltoon2mtoon.${{env.VERSION}}.zip"
