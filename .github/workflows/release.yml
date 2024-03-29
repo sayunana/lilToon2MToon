@@ -18,9 +18,8 @@ jobs:
 
       - name: ZIP
         run: |
-          cd ${{ github.workspace }}/Assets
-          mv sayunana/ com.github.sayunana.liltoon2mtoon.${{env.VERSION}}/
-          zip -r com.github.sayunana.liltoon2mtoon.${{env.VERSION}}.zip com.github.sayunana.liltoon2mtoon.${{env.VERSION}}/
+          cd ${{ github.workspace }}/Assets/sayunana
+          zip -r com.github.sayunana.liltoon2mtoon.${{env.VERSION}}.zip *
 
       - name: FilePath
         run: |
@@ -36,4 +35,4 @@ jobs:
           body: "Update lilToon2MToon ${{env.VERSION}}\n UPM `https://github.com/sayunana/lilToon2MToon.git?path=Assets/sayunana#${{env.VERSION}}`"
           tag_name: ${{env.VERSION}}
           draft: false
-          files: "${{ github.workspace }}/Assets/com.github.sayunana.liltoon2mtoon.${{env.VERSION}}.zip"
+          files: "${{ github.workspace }}/Assets/sayunana/com.github.sayunana.liltoon2mtoon.${{env.VERSION}}.zip"
