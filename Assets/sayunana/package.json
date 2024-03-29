@@ -1,13 +1,16 @@
 {
     "name": "com.github.sayunana.liltoon2mtoon",
-    "displayName": "lilToon2MToon",
     "version": "0.1.0",
-    "unity": "2019.4",
-    "description": "lilToon2MToon",
-    "author": {
-        "name": "sayunana",
-        "url": "https://github.com/sayunana/lilToon2MToon"
-    },
-    "dependencies": {
+    "displayName": "lilToon2MToon",
+    "description": "Convert lilToon to Mtoon.",
+    "unity": "2018.1",
+    "documentationUrl": "https://github.com/sayunana/lilToon2MToon/",
+    "changelogUrl": "https://github.com/sayunana/lilToon2MToon/blob/main/CHANGELOG.md",
+    "licensesUrl": "https://github.com/sayunana/lilToon2MToon?tab=MIT-1-ov-file#readme",
+    "license": "MIT",
+    "url" : "https://github.com/sayunana/lilToon2MToon/releases/download/0.1.0/com.github.sayunana.liltoon2mtoon.0.1.0.zip?",
+    "repo" : "https://sayunana.github.io/vpm-repos/sayunana-vpm.json",
+    "legacyFolders" : {
+      "Assets\\lilToon" : "5530bf508400118478490709ab628891"
     }
 }
