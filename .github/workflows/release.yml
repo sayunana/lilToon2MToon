@@ -18,7 +18,7 @@ jobs:
 
       - name: ZIP
         run: |
-          cd ${{ github.workspace }}/Assets/sayunana
+          cd ${{ github.workspace }}/Assets/sayunana/lilToon2MToon
           zip -r com.github.sayunana.liltoon2mtoon.${{env.VERSION}}.zip *
 
       - name: FilePath
