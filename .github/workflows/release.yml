@@ -23,7 +23,7 @@ jobs:
 
       - name: FilePath
         run: |
-          echo "${{ github.workspace }}/Assets/com.github.sayunana.liltoon2mtoon.${{env.VERSION}}.zip"
+          echo "${{ github.workspace }}/Assets/sayunana/lilToon2MToon/com.github.sayunana.liltoon2mtoon.${{env.VERSION}}.zip"
 
       - name: Create Release
         id: create_release
@@ -35,4 +35,4 @@ jobs:
           body: "Update lilToon2MToon ${{env.VERSION}}\n UPM `https://github.com/sayunana/lilToon2MToon.git?path=Assets/sayunana#${{env.VERSION}}`"
           tag_name: ${{env.VERSION}}
           draft: false
-          files: "${{ github.workspace }}/Assets/sayunana/com.github.sayunana.liltoon2mtoon.${{env.VERSION}}.zip"
+          files: "${{ github.workspace }}/Assets/sayunana/lilToon2MToon/com.github.sayunana.liltoon2mtoon.${{env.VERSION}}.zip"
