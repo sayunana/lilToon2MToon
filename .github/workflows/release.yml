@@ -5,7 +5,7 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     env:
-      JSON_FILE_PATH: "Assets/sayunana/package.json"
+      JSON_FILE_PATH: "Assets/sayunana/lilToon2MToon/package.json"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
