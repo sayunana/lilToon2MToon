@@ -25,3 +25,6 @@ https://github.com/lilxyzw/lilToon/issues/124#event-12244419336\ \
 
 # UPM
 `https://github.com/sayunana/lilToon2MToon.git?path=Assets/sayunana`をUnity Package Managerの`Add package from git url`で追加してください。
+
+# VCC
+[ここ](https://sayunana.github.io/vpm-repos/)から登録できます。
