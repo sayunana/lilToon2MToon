@@ -3,9 +3,11 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using lilToon;
 using UnityEditor;
 using UnityEngine;
+#if ENABLE_LILTOON
+using lilToon;
+#endif
 
 namespace sayunana
 {
@@ -46,7 +48,24 @@ namespace sayunana
             GUILayout.Label("lilToon2MToon\n" +
                             "このエディターではアバターに登録されているlilToonのマテリアルをMToonに変換し差し替えます。", textStyle);
 
-            if(IsCheckImportingMToon() == false)
+            if (IsCheckImportlilToon() == false)
+            {
+                GUILayout.Label("lilToonがインポートされていません", errorTextStyle);
+                if (GUILayout.Button("lilToonをインポートしてください", buttonStyle))
+                {
+                    Application.OpenURL("https://github.com/lilxyzw/lilToon");
+                }
+                return;
+            }
+#if !ENABLE_LILTOON
+            GUILayout.Label("lilToonのバージョンが足りていません",errorTextStyle);
+            // todo:lilMaterialBakerが一般公開されたら削除する
+            GUILayout.Label("devをインポートしてください",errorTextStyle);
+            return;
+#endif
+
+            
+            if(IsCheckImportMToon() == false)
             {
                 GUILayout.Label("MToonがインポートされていません", errorTextStyle);
                 if (GUILayout.Button("MToonをインポートしてください",buttonStyle))
@@ -175,7 +194,9 @@ namespace sayunana
 
         void ConvertlilToon(Material mat, string path)
         {
+#if ENABLE_LILTOON
             lilMaterialBaker.CreateMToonMaterial(mat, path);
+#endif
         }
 
         //引数のパスがUnityプロジェクト内にあるか判定
@@ -234,12 +255,18 @@ namespace sayunana
             return list.ToArray();
         }
 
-        static bool IsCheckImportingMToon()
+        static bool IsCheckImportMToon()
         {
             Shader shader = Shader.Find("VRM/MToon");
             return shader != null;
         }
 
+        static bool IsCheckImportlilToon()
+        {
+            Shader shader = Shader.Find("lilToon");
+            return shader != null;
+        }
+        
         //lilToonのマテリアルか判定
         bool IslilToonShader(Material material)
         {
