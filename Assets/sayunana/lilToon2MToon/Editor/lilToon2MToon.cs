@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -37,6 +38,7 @@ namespace sayunana
             GUIStyle errorTextStyle = new GUIStyle(GUI.skin.label);
             errorTextStyle.wordWrap = true;
             errorTextStyle.normal.textColor = Color.red;
+            errorTextStyle.hover.textColor = Color.red;
 
             GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
             buttonStyle.wordWrap = true;
@@ -44,6 +46,16 @@ namespace sayunana
             GUILayout.Label("lilToon2MToon\n" +
                             "このエディターではアバターに登録されているlilToonのマテリアルをMToonに変換し差し替えます。", textStyle);
 
+            if(IsCheckImportingMToon() == false)
+            {
+                GUILayout.Label("MToonがインポートされていません", errorTextStyle);
+                if (GUILayout.Button("MToonをインポートしてください",buttonStyle))
+                {
+                    Application.OpenURL("https://vrm.dev/");
+                }
+                return;
+            }
+            
             GUILayout.Space(30);
 
             if (GUILayout.Button("マテリアルを保存するファイルパスを選択", buttonStyle))
@@ -59,6 +71,7 @@ namespace sayunana
             {
                 GUILayout.Label("保存先：", textStyle);
             }
+
             root = (Animator)EditorGUILayout.ObjectField("アバターオブジェクト", root, typeof(Animator), true);
 
             if (saveMtoonMaterialsFilePath == String.Empty)
@@ -104,7 +117,7 @@ namespace sayunana
                             }
                             else
                             {
-                                Debug.Log($"{sMaterial.name}はlitToonのマテリアルではありません",sMaterial);
+                                Debug.LogError($"{sMaterial.name}はlitToonのマテリアルではありません", sMaterial);
                             }
                         }
                     }
@@ -152,95 +165,89 @@ namespace sayunana
                     setActiveFalseList.ToList().ForEach(obj => obj.SetActive(false));
                 }
             }
+        }
 
-            void SetSaveMaterialsFilePath()
+        void SetSaveMaterialsFilePath()
+        {
+            string path = EditorUtility.OpenFolderPanel("マテリアルの保存先を指定", "", "");
+            saveMtoonMaterialsFilePath = path;
+        }
+
+        void ConvertlilToon(Material mat, string path)
+        {
+            lilMaterialBaker.CreateMToonMaterial(mat, path);
+        }
+
+        //引数のパスがUnityプロジェクト内にあるか判定
+        bool InUnityProjectPath(string fullPath)
+        {
+            var path = fullPath.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+                StringSplitOptions.RemoveEmptyEntries);
+
+            return path.Any(t => t == "Assets");
+        }
+
+        //引数のフルパスからプロジェクト内の相対パスを取得
+        string GetProjectRelativePath(string fullPath)
+        {
+            var path = fullPath.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+                StringSplitOptions.RemoveEmptyEntries);
+
+            int index = 0;
+            for (int i = 0; i < path.Length; i++)
             {
-                string path = EditorUtility.OpenFolderPanel("マテリアルの保存先を指定", "", "");
-                saveMtoonMaterialsFilePath = path;
-            }
-
-            void ConvertlilToon(Material mat, string path)
-            {
-                lilMaterialBaker.CreateMToonMaterial(mat, path);
-            }
-
-            //引数のパスがUnityプロジェクト内にあるか判定
-            bool InUnityProjectPath(string fullPath)
-            {
-                var path = fullPath.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
-                    StringSplitOptions.RemoveEmptyEntries);
-
-                return path.Any(t => t == "Assets");
-            }
-
-
-            //引数のフルパスからプロジェクト内の相対パスを取得
-            string GetProjectRelativePath(string fullPath)
-            {
-                var path = fullPath.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
-                    StringSplitOptions.RemoveEmptyEntries);
-
-                int index = 0;
-                for (int i = 0; i < path.Length; i++)
+                if (path[i] == "Assets")
                 {
-                    if (path[i] == "Assets")
-                    {
-                        index = i;
-                        break;
-                    }
+                    index = i;
+                    break;
+                }
+            }
+
+            string projectRelativePath = "";
+            for (int i = index; i < path.Length; i++)
+            {
+                projectRelativePath += path[i];
+                if (i != path.Length - 1)
+                {
+                    projectRelativePath += "/";
+                }
+            }
+
+            return projectRelativePath;
+        }
+
+        //引数のオブジェクトの子オブジェクトをすべてアクティブにする
+        GameObject[] SetActiveTrueInAllChildren(GameObject obj)
+        {
+            List<GameObject> list = new List<GameObject>();
+            foreach (Transform n in obj.transform)
+            {
+                if (n.gameObject.activeSelf == false)
+                {
+                    n.gameObject.SetActive(true);
+                    list.Add(n.gameObject);
                 }
 
-                string projectRelativePath = "";
-                for (int i = index; i < path.Length; i++)
-                {
-                    projectRelativePath += path[i];
-                    if (i != path.Length - 1)
-                    {
-                        projectRelativePath += "/";
-                    }
-                }
-
-                return projectRelativePath;
+                list.AddRange(SetActiveTrueInAllChildren(n.gameObject));
             }
 
-            //引数のオブジェクトの子オブジェクトをすべてアクティブにする
-            GameObject[] SetActiveTrueInAllChildren(GameObject obj)
-            {
-                List<GameObject> list = new List<GameObject>();
-                foreach (Transform n in obj.transform)
-                {
-                    if (n.gameObject.activeSelf == false)
-                    {
-                        n.gameObject.SetActive(true);
-                        list.Add(n.gameObject);
-                    }
+            return list.ToArray();
+        }
 
-                    list.AddRange(SetActiveTrueInAllChildren(n.gameObject));
-                }
+        static bool IsCheckImportingMToon()
+        {
+            Shader shader = Shader.Find("VRM/MToon");
+            return shader != null;
+        }
 
-                return list.ToArray();
-            }
+        //lilToonのマテリアルか判定
+        bool IslilToonShader(Material material)
+        {
+            if (material == null)
+                return false;
 
-            //lilToonのマテリアルか判定
-            bool IslilToonShader(Material material)
-            {
-                if (material == null)
-                    return false;
-
-                return material.shader.name.Contains("lilToon");
-                /*var lilShaderManager = typeof(lilShaderManager);
-                foreach (var f in lilShaderManager.GetFields())
-                {
-                    var n = f.Name;
-                    var v = f.GetValue(lilShaderManager);
-
-                    if (material.shader == (Shader)v)
-                    {
-                        return true;
-                    }
-                }
-                return false;*/
-            }
+            return material.shader.name.Contains("lilToon");
         }
     }
 }
+#endif
