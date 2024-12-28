@@ -12,9 +12,6 @@
     "com.vrmc.vrmshaders": {
       "version": "0.121.0"
     },
-    "com.vrmc.univrm": {
-      "version": "0.121.0"
-    },
     "jp.lilxyzw.avatar-utils": {
       "version": "1.1.0"
     }
@@ -55,19 +52,6 @@
     "com.vrmc.vrmshaders": {
       "version": "0.121.0",
       "dependencies": {}
-    },
-    "com.vrmc.univrm": {
-      "version": "0.121.0",
-      "dependencies": {
-        "com.vrmc.vrmshaders": "0.121.0",
-        "com.vrmc.gltf": "0.121.0"
-      }
-    },
-    "com.vrmc.gltf": {
-      "version": "0.121.0",
-      "dependencies": {
-        "com.vrmc.vrmshaders": "0.121.0"
-      }
     },
     "jp.lilxyzw.avatar-utils": {
       "version": "1.1.0",
