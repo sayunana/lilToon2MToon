@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace sayunana
@@ -34,7 +34,27 @@ namespace sayunana
         private static void TranslateTextLoad()
         {
             var en = Resources.Load<TextAsset>("lilToon2MToon-en").ToString();
-            _enTrnDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(en);
+            _enTrnDic = Deserialize(en);
+        }
+        
+        private static Dictionary<string, string> Deserialize(string json)
+        {
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            json = json.Replace("{", "").Replace("}", "");
+
+            var columns = json.Split(",\r\n");
+
+            foreach (var column in columns)
+            {
+                var t=  column.Split(":");
+                var key = t[0];
+                var value = t[1];
+                string pattern = $@"{Regex.Escape("\"")}(.*?){Regex.Escape("\"")}";
+                var keyOut = Regex.Match(key, pattern);
+                var valueOut = Regex.Match(value, pattern);
+                dic.Add(keyOut.Groups[1].Value, valueOut.Groups[1].Value);
+            }
+            return dic;
         }
     }
 }
