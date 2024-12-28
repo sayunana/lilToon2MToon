@@ -34,6 +34,12 @@ namespace sayunana
         /// </Summary>
         void OnGUI()
         {
+            using (new GUILayout.HorizontalScope())
+            {
+                GUILayout.FlexibleSpace();
+                Helper.SystemLanguage = (Helper.Language)EditorGUILayout.EnumPopup(Helper.SystemLanguage);                
+            }
+            
             GUIStyle textStyle = new GUIStyle(GUI.skin.label);
             textStyle.wordWrap = true;
 
@@ -44,75 +50,89 @@ namespace sayunana
 
             GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
             buttonStyle.wordWrap = true;
-
-            GUILayout.Label("lilToon2MToon\n" +
-                            "このエディターではアバターに登録されているlilToonのマテリアルをMToonに変換し差し替えます。", textStyle);
+            GUILayout.Label($"{Helper.Translate("このエディターではアバターに登録されているlilToonのマテリアルをMToonに変換し差し替えます")}", textStyle);
 
             if (IsCheckImportlilToon() == false)
             {
-                GUILayout.Label("lilToonがインポートされていません", errorTextStyle);
-                if (GUILayout.Button("lilToonをインポートしてください", buttonStyle))
+                // todo:lilMaterialBakerが一般公開されたらコメントアウトを外す
+
+                /*
+                GUILayout.Label(Helper.Translate("lilToonがインポートされていません"), errorTextStyle);
+                if (GUILayout.Button(Helper.Translate("lilToonをインポートしてください"), buttonStyle))
                 {
                     Application.OpenURL("https://github.com/lilxyzw/lilToon");
                 }
+                */
+                
+                // todo:lilMaterialBakerが一般公開されたら削除する
+                GUILayout.Label(Helper.Translate("lilToon#devをインポートしてください"), errorTextStyle);
+                if (GUILayout.Button(Helper.Translate("lilToon#devのURLをコピーする"), buttonStyle))
+                {
+                    GUIUtility.systemCopyBuffer = "https://github.com/lilxyzw/lilToon.git?path=Assets/lilToon#dev";
+                }
+                
                 return;
             }
 #if !ENABLE_LILTOON
-            GUILayout.Label("lilToonのバージョンが足りていません",errorTextStyle);
+            GUILayout.Label(Helper.Translate("lilToonのバージョンが適切ではありません"), errorTextStyle);
             // todo:lilMaterialBakerが一般公開されたら削除する
-            GUILayout.Label("devをインポートしてください",errorTextStyle);
+            GUILayout.Label(Helper.Translate("lilToon#devをインポートしてください"), errorTextStyle);
+            if (GUILayout.Button(Helper.Translate("lilToon#devのURLをコピーする"), buttonStyle))
+            {
+                GUIUtility.systemCopyBuffer = "https://github.com/lilxyzw/lilToon.git?path=Assets/lilToon#dev";
+            }
             return;
 #endif
-
-            
-            if(IsCheckImportMToon() == false)
+            if (IsCheckImportMToon() == false)
             {
-                GUILayout.Label("MToonがインポートされていません", errorTextStyle);
-                if (GUILayout.Button("MToonをインポートしてください",buttonStyle))
+                GUILayout.Label(Helper.Translate("MToonがインポートされていません"), errorTextStyle);
+                if (GUILayout.Button(Helper.Translate("MToonをインポートしてください"), buttonStyle))
                 {
                     Application.OpenURL("https://vrm.dev/");
                 }
+
                 return;
             }
-            
+
             GUILayout.Space(30);
 
-            if (GUILayout.Button("マテリアルを保存するファイルパスを選択", buttonStyle))
+            if (GUILayout.Button(Helper.Translate("マテリアルを保存するファイルパスを選択"), buttonStyle))
             {
                 SetSaveMaterialsFilePath();
             }
 
             if (InUnityProjectPath(saveMtoonMaterialsFilePath))
             {
-                GUILayout.Label("保存先：" + GetProjectRelativePath(saveMtoonMaterialsFilePath), textStyle);
+                GUILayout.Label($"{Helper.Translate("保存先")}：" + GetProjectRelativePath(saveMtoonMaterialsFilePath),
+                    textStyle);
             }
             else
             {
-                GUILayout.Label("保存先：", textStyle);
+                GUILayout.Label($"{Helper.Translate("保存先")}：", textStyle);
             }
 
-            root = (Animator)EditorGUILayout.ObjectField("アバターオブジェクト", root, typeof(Animator), true);
+            root = (Animator)EditorGUILayout.ObjectField(Helper.Translate("アバターオブジェクト"), root, typeof(Animator), true);
 
             if (saveMtoonMaterialsFilePath == String.Empty)
             {
-                GUILayout.Label("保存先を指定してください", errorTextStyle);
+                GUILayout.Label(Helper.Translate("保存先を指定してください"), errorTextStyle);
             }
 
             if (!InUnityProjectPath(saveMtoonMaterialsFilePath) && saveMtoonMaterialsFilePath != String.Empty)
             {
-                GUILayout.Label("保存先がAssets外です\n" +
-                                "保存先をAssets内に変更してください", errorTextStyle);
+                GUILayout.Label($"{Helper.Translate("保存先がAssets外です")} \n" +
+                                $"{Helper.Translate("保存先をAssets内に変更してください")}", errorTextStyle);
             }
 
             if (root == null)
             {
-                GUILayout.Label("アニメーターをセットしてください", errorTextStyle);
+                GUILayout.Label(Helper.Translate("アニメーターをセットしてください"), errorTextStyle);
             }
 
             if (root != null && saveMtoonMaterialsFilePath != String.Empty &&
                 InUnityProjectPath(saveMtoonMaterialsFilePath))
             {
-                if (GUILayout.Button("lilToonをMToonに変換する", buttonStyle))
+                if (GUILayout.Button(Helper.Translate("lilToonをMToonに変換する"), buttonStyle))
                 {
                     //一旦すべての非表示オブジェクトを表示する
                     var setActiveFalseList = SetActiveTrueInAllChildren(root.gameObject);
@@ -136,7 +156,8 @@ namespace sayunana
                             }
                             else
                             {
-                                Debug.LogError($"{sMaterial.name}はlitToonのマテリアルではありません", sMaterial);
+                                Debug.LogError($"{sMaterial.name}{Helper.Translate("はlilToonのマテリアルではありません")}",
+                                    sMaterial);
                             }
                         }
                     }
@@ -188,7 +209,7 @@ namespace sayunana
 
         void SetSaveMaterialsFilePath()
         {
-            string path = EditorUtility.OpenFolderPanel("マテリアルの保存先を指定", "", "");
+            string path = EditorUtility.OpenFolderPanel(Helper.Translate("マテリアルの保存先を指定"), "", "");
             saveMtoonMaterialsFilePath = path;
         }
 
@@ -266,7 +287,7 @@ namespace sayunana
             Shader shader = Shader.Find("lilToon");
             return shader != null;
         }
-        
+
         //lilToonのマテリアルか判定
         bool IslilToonShader(Material material)
         {

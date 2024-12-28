@@ -1,0 +1,20 @@
+{
+    "このエディターではアバターに登録されているlilToonのマテリアルをMToonに変換し差し替えます": "In this editor, you can convert the lilToon materials registered in the avatar to MToon and replace them.",
+    "lilToonがインポートされていません": "lilToon not imported",
+    "lilToonをインポートしてください": "Import lilToon",
+    "lilToon#devをインポートしてください": "Import lilToon#dev",
+    "lilToon#devのURLをコピーする": "Copy the URL for lilToon#dev",
+    "lilToonのバージョンが適切ではありません": "The lilToon version is not correct",
+    "MToonがインポートされていません": "MToon not imported",
+    "MToonをインポートしてください": "Import MToon",
+    "マテリアルを保存するファイルパスを選択": "Select the file path to save the material",
+    "保存先": "Save to",
+    "アバターオブジェクト": "Avatar Object",
+    "保存先を指定してください": "Please specify the save destination",
+    "保存先がAssets外です": "The save destination is outside Assets",
+    "保存先をAssets内に変更してください": "Please change the save location to within Assets.",
+    "アニメーターをセットしてください": "Set the animator",
+    "lilToonをMToonに変換する": "Convert lilToon to MToon",
+    "はlilToonのマテリアルではありません": "is not a lilToon material",
+    "マテリアルの保存先を指定": "Specify the destination to save the material"
+}
